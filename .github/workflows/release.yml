@@ -1,0 +1,66 @@
+# Compile Armoire Designer (Rust + Velopack) et publie l'installateur
+# dans une Release GitHub à chaque tag de la forme v1.2.3.
+name: Release
+
+on:
+  push:
+    tags: ["v*.*.*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version (ex. 1.0.1)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: rust
+
+      - name: Version
+        id: ver
+        run: |
+          $v = "${{ github.event.inputs.version }}"
+          if (-not $v) { $v = "${{ github.ref_name }}".TrimStart("v") }
+          "version=$v" >> $env:GITHUB_OUTPUT
+
+      - name: Outil Velopack
+        run: dotnet tool install -g vpk
+
+      # Récupère la release précédente pour produire des mises à jour différentielles.
+      - name: Release précédente
+        continue-on-error: true
+        working-directory: rust
+        run: vpk download github --repoUrl "${{ github.server_url }}/${{ github.repository }}" --token "${{ secrets.GITHUB_TOKEN }}" --outputDir Releases
+
+      - name: Compiler et empaqueter
+        working-directory: rust
+        env:
+          # Laisser vide pour désactiver la vérification des mises à jour.
+          # Avec les Releases GitHub : https://github.com/<compte>/<dépôt>/releases/latest/download
+          UPDATE_URL: ${{ vars.ARMOIRE_UPDATE_URL }}
+        run: ./build.ps1 -Version "${{ steps.ver.outputs.version }}" -UpdateUrl "$env:UPDATE_URL"
+
+      - name: Publier la release
+        working-directory: rust
+        run: >
+          vpk upload github --repoUrl "${{ github.server_url }}/${{ github.repository }}"
+          --token "${{ secrets.GITHUB_TOKEN }}" --outputDir Releases --publish
+          --releaseName "Armoire Designer ${{ steps.ver.outputs.version }}"
+          --tag "v${{ steps.ver.outputs.version }}"

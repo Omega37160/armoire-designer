@@ -1,0 +1,7 @@
+Icône « plan technique » d'Armoire Designer.
+- icon-detail.svg : version détaillée (48 px et plus) ; icon-simple.svg : version simplifiée (16-32 px).
+- make.js régénère les deux SVG et les pages r<taille>.html ; chaque page est rendue en PNG par Edge :
+    msedge --headless=new --default-background-color=00000000 --screenshot=i32.png --window-size=32,32 file:///.../r32.html
+- pack.js assemble les PNG en .ico :
+    node pack.js ..\ArmoireDesigner.ico i16.png i24.png i32.png i48.png i64.png i128.png i256.png
+- Le favicon de ArmoireDesigner.html est icon-detail.svg encodé en data:.

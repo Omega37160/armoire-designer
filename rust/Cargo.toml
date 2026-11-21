@@ -1,0 +1,23 @@
+[package]
+name = "armoire-designer"
+version = "1.0.0"
+edition = "2021"
+description = "Armoire Designer - conception d'armoires électriques"
+
+[[bin]]
+name = "ArmoireDesigner"
+path = "src/main.rs"
+
+[dependencies]
+tao = "0.30"
+wry = "0.47"
+velopack = "1"
+rfd = "0.15"
+
+[build-dependencies]
+winresource = "0.1"
+
+[profile.release]
+opt-level = "s"
+lto = true
+strip = true

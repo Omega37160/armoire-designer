@@ -1,0 +1,18 @@
+# Binaires produits (publiés via GitHub Releases)
+*.exe
+rust/target/
+rust/assets/
+rust/Releases/
+
+# Données utilisateur de la version portable
+ArmoireDesigner-donnees/
+
+# Sauvegardes locales
+*.bak.html
+*.ancienne.ico
+
+# Raccourci Windows (chemins propres à ce PC)
+*.lnk
+
+# Réglages locaux de Claude Code
+.claude/settings.local.json
