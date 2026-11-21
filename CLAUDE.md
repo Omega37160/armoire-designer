@@ -26,7 +26,10 @@ Logiciel de conception d'armoires électriques, en français, pour Windows.
 - État global `S` = {enc, devs, wires, uid, opts, ducts, door, proj, cabs, cur, custom, prices, margin, links, note, sim},
   sauvegardé dans localStorage (`armoire`, `armoireLib`, `armoirePrices`, `armoireBak`, `armoireHelpSeen`, `armoireTab`).
 - Catalogue `CAT`/`ALL` construit par `add(groupe,item)` ; kinds : gv2, gv2p, ic60, lc1d (P7 = 230 VAC, BD = 24 VDC),
-  psu, cpu, io, ba, tb (borniers), custom, vfd (ATV320/630/650), dr (éléments de porte).
+  psu, cpu, io, ba, tb (borniers), custom, vfd (ATV12/320/630/650), dr (éléments de porte).
+  Variantes : ic60 + `sw:1` = interrupteur iSW (pas de déclencheur) ; lc1d + `mod:1,poles` = contacteur modulaire iCT
+  (bobine toujours t3/b3, 4e pôle = t4/b4) ; custom + `sub` ('lrd','prd','ipc') = dessin dédié ; vfd + `in1` = entrée 1~.
+  Préfixes de repère : `TAGP` par kind, ou `tagp` sur l'article. Groupes du catalogue fermés par défaut (`PALOPEN`).
 - Bornes : `terms(dev)` → {id,x,y,label} ; t# en haut, b# en bas, c# voies d'E/S/commande, p# réseau.
 - Vues `viewMode` : '3d' (implantation), 'sch' (schéma multi-folios), 'door' (porte fermée), 'open' (porte ouverte).
 - Fonctions utiles : `place(ref,{x,y})`, `rails()`, `nextTag`, `render()`, `fit()`, `setView()`, `modal(titre,html,boutons)`,

@@ -31,7 +31,7 @@ main{flex:1;display:flex;min-height:0}
 #pal{width:290px;background:#131a25;border-right:1px solid #000;display:flex;flex-direction:column}
 #pal input{margin:8px}
 #plist{overflow:auto;flex:1;padding:0 8px 8px}
-.grp{margin-top:8px;font-weight:600;color:#4d9fff;cursor:pointer;user-select:none;padding:4px 0;border-bottom:1px solid #1f2b3c}
+.grp{margin-top:8px;font-weight:600;color:#4d9fff;cursor:pointer;user-select:none;padding:4px 0;border-bottom:1px solid #1f2b3c}.grp::before{content:'▸';display:inline-block;width:14px;color:#8899b0;transition:transform .15s}.grp.open::before{transform:rotate(90deg)}
 .card{display:flex;gap:8px;align-items:center;padding:5px;margin:3px 0;background:#1c2838;border:1px solid #2a3a52;border-radius:4px;cursor:grab}
 .card:hover{border-color:#4d9fff}
 .card .thumb{width:46px;height:54px;flex:none}
@@ -269,6 +269,25 @@ add(GTB,{ref:'3210405',name:'PTTBS 2,5-MTB/TGB',desc:'Bloc de jonction de sectio
 add(GTB,{ref:'3208100',name:'PT 2,5',desc:'Bloc de jonction simple · 2,5 mm² · 24 A · 800 V · Push-in',w:5.2,h:52,d:45,kind:'tb',lv:1,var:'pt',ph:'',brand:'Phoenix Contact'});
 add(GTB,({kind:'custom',ref:'REP-4P-125',name:'Répartiteur tétrapolaire 125 A',desc:'Bloc de distribution 4 pôles · 1 arrivée / 20 départs (6×L1, 6×L2, 6×L3, 2×N) · 125 A',w:110,h:80,d:60,color:'#7b8794',tagp:'RD',ph:'3~',brand:'Générique',top:{n:4,labels:['L1','L2','L3','N']},bot:{n:20,labels:[...Array(6).fill('L1'),...Array(6).fill('L2'),...Array(6).fill('L3'),'N','N']}}));
 add(GTB,{ref:'3212120',name:'PT 10',desc:'Bloc de jonction simple · 10 mm² · 57 A · 1000 V · Push-in',w:10.2,h:52,d:45,kind:'tb',lv:1,var:'pt',ph:'',brand:'Phoenix Contact'});
+const G3D='Schneider · Acti9 iC60N courbe D – départs moteurs (mono / tri)';
+[[2,'1~ (Ph+N)'],[3,'3~'],[4,'3~+N']].forEach(([p,ph])=>[6,10,16,20].forEach(a=>add(G3D,{ref:'A9F75'+p+String(a).padStart(2,'0'),name:'iC60N '+p+'P courbe D',desc:a+' A · '+p+' pôles · '+(p===2?'monophasé':'triphasé'),w:9*p,h:90,d:73,kind:'ic60',poles:p,ph,brand:'Schneider'})));
+add(G4,{ref:'A9R41440',name:'iID 4P 40A 30mA type AC',desc:'Triphasé',w:72,h:90,d:73,kind:'ic60',poles:8,ph:'3~',brand:'Schneider'});
+const GSW='Schneider · Acti9 iSW – interrupteurs-sectionneurs (mono / tri)';
+[['A9S60220',2,20],['A9S60240',2,40],['A9S60440',4,40],['A9S60463',4,63]].forEach(([r,p,a])=>add(GSW,{ref:r,name:'iSW '+p+'P '+a+' A',desc:a+' A · '+(p===2?'monophasé':'triphasé + N')+' · coupure en charge',w:18*p,h:90,d:73,kind:'ic60',poles:p,sw:1,ph:p===2?'1~':'3~+N',brand:'Schneider',tagp:'QS'}));
+const GCT='Schneider · Acti9 iCT – contacteurs modulaires (bobine 230 VAC)';
+[['A9C20732',2,25,18],['A9C20834',4,25,36],['A9C20844',4,40,54],['A9C20864',4,63,54]].forEach(([r,p,a,w])=>add(GCT,{ref:r,name:'iCT '+p+'P '+a+' A '+p+'NO',desc:a+' A AC-7a · '+(p===2?'monophasé':'triphasé + N')+' · bobine 230 VAC',w,h:85,d:64,kind:'lc1d',mod:1,poles:p,ph:p===2?'1~':'3~+N',brand:'Schneider'}));
+const GLR='Schneider · TeSys LRD – relais thermiques (tri)';
+[['LRD06','1–1,6'],['LRD07','1,6–2,5'],['LRD08','2,5–4'],['LRD10','4–6'],['LRD12','5,5–8'],['LRD14','7–10'],['LRD16','9–13'],['LRD21','12–18'],['LRD22','16–24'],['LRD32','23–32']].forEach(([r,a])=>add(GLR,{ref:r,name:'Relais thermique TeSys LRD',desc:'Réglage '+a+' A · classe 10A · sous LC1D ou socle LAD7B106',w:45,h:66,d:70,kind:'custom',sub:'lrd',color:'#33363b',tagp:'F',ph:'3~',brand:'Schneider',top:{n:3,labels:['1/L1','3/L2','5/L3']},bot:{n:7,labels:['2/T1','4/T2','6/T3','95','96','97','98']}}));
+const GPR='Schneider · Acti9 iPRD / iPC – parafoudres et prises';
+add(GPR,{ref:'A9L40501',name:'Parafoudre iPRD40r 1P+N',desc:'Monophasé · Imax 40 kA · report de signalisation',w:36,h:90,d:68,kind:'custom',sub:'prd',color:'#eceef0',tagp:'F',ph:'1~',brand:'Schneider',top:{n:2,labels:['L','N']},bot:{n:1,labels:['PE']}});
+add(GPR,{ref:'A9L40601',name:'Parafoudre iPRD40r 3P+N',desc:'Triphasé + N · Imax 40 kA · report de signalisation',w:72,h:90,d:68,kind:'custom',sub:'prd',color:'#eceef0',tagp:'F',ph:'3~+N',brand:'Schneider',top:{n:4,labels:['L1','L2','L3','N']},bot:{n:1,labels:['PE']}});
+add(GPR,{ref:'A9A15310',name:'Prise modulaire iPC 2P+T 16 A',desc:'Monophasé 250 V · standard français · 2,5 modules',w:45,h:90,d:61,kind:'custom',sub:'ipc',color:'#eceef0',tagp:'XS',ph:'1~',brand:'Schneider',top:{n:3,labels:['L','N','PE']},bot:{n:0,labels:[]}});
+add(G6,{ref:'ABL8RPS24100',name:'Alim. Phaseo 24 V DC 10 A',desc:'1~/2~ 100–500 VAC → 24 VDC · cotes à vérifier',w:85,h:125,d:120,kind:'psu',ph:'24V',brand:'Schneider'});
+add(G6,{ref:'ABL8WPS24200',name:'Alim. Phaseo 24 V DC 20 A',desc:'3~ 380–500 VAC → 24 VDC · cotes à vérifier',w:110,h:125,d:120,kind:'psu',in3:true,ph:'24V',brand:'Schneider'});
+add(G6,{ref:'ABL8WPS24400',name:'Alim. Phaseo 24 V DC 40 A',desc:'3~ 380–500 VAC → 24 VDC · cotes à vérifier',w:165,h:125,d:120,kind:'psu',in3:true,ph:'24V',brand:'Schneider'});
+const G12='Schneider · Altivar ATV12 (entrée 230 V monophasée)';
+const V_C12=['R1A','R1B','R1C','COM','AI1','+5V','AO1','LO1','CLO','LI1','LI2','LI3','LI4','+24V'];
+[['H018M2',.18,72,142,102],['H037M2',.37,72,130,125],['H055M2',.55,72,130,138],['H075M2',.75,72,130,138],['HU15M2',1.5,105,130,158],['HU22M2',2.2,105,130,158]].forEach(([c,k,w,h,d])=>add(G12,{ref:'ATV12'+c,name:'Variateur Altivar 12',desc:kw_(k)+' kW · 1~ 200–240 V → moteur 3~ 230 V · cotes à vérifier',w,h,d,kind:'vfd',ph:'1~',in1:1,brand:'Schneider',fam:'ATV12',top:['L1','L2/N','PE'],bot:['U/T1','V/T2','W/T3','PE'],ctl:V_C12,per:7,nets:['RJ45']}));
 const ALL={};CAT.forEach(g=>g.items.forEach(i=>ALL[i.ref]=i));
 
 // ---------- ÉTAT ----------
@@ -312,22 +331,32 @@ function drawDev(dv){
   if(k==='gv2'){
    let tk='';for(let i=0;i<=8;i++){const a=(-135+i*33.75)*Math.PI/180;tk+=`<line x1="${cx+Math.sin(a)*9.6}" y1="${y+45-Math.cos(a)*9.6}" x2="${cx+Math.sin(a)*11.4}" y2="${y+45-Math.cos(a)*11.4}" stroke="#cfd3d7" stroke-width=".55"/>`}
    ex+=tk+`<circle cx="${cx}" cy="${y+45}" r="8.2" fill="#121417" stroke="#6b727a" stroke-width=".8"/><circle cx="${cx}" cy="${y+45}" r="5.6" fill="#2a2e33"/><path d="M${cx} ${y+45}L${cx+3} ${y+39.8}" stroke="#fff" stroke-width="1.1" stroke-linecap="round"/>`
-    +R(x+5,y+57,w/2-6.5,14,'#1f9d45',2)+R(x+w/2+1.5,y+57,w/2-6.5,14,'#c0392b',2)
-    +txt(x+5+(w/2-6.5)/2,y+66.6,'I',7,'#fff')+txt(x+w/2+1.5+(w/2-6.5)/2,y+66.6,'O',7,'#fff');
+    +R(x+8,y+55,w-16,8.5,'#1b1d20',1.6,'#000')+R(x+8,y+65,w-16,8.5,'#c0392b',1.6,'#7f1d1d')
+    +txt(x+w/2,y+61.4,'I',6,'#fff')+txt(x+w/2,y+71.4,'O',6,'#fff');
   }else{
    let rg='';for(let i=0;i<16;i++){const a=i*22.5*Math.PI/180;rg+=`<line x1="${cx+Math.sin(a)*13}" y1="${y+49-Math.cos(a)*13}" x2="${cx+Math.sin(a)*15}" y2="${y+49-Math.cos(a)*15}" stroke="#555a61" stroke-width="1"/>`}
    ex+=rg+`<circle cx="${cx}" cy="${y+49}" r="14.4" fill="#15171a" stroke="#4b5057" stroke-width=".8"/><circle cx="${cx}" cy="${y+49}" r="9.5" fill="#202328" stroke="#32363c" stroke-width=".6"/><rect x="${cx-1.4}" y="${y+36}" width="2.8" height="8" rx="1" fill="#fff"/>`+txt(cx-12.6,y+37.5,'I',4.4,'#ddd')+txt(cx+12.6,y+37.5,'O',4.4,'#ddd');
   }
  }else if(k==='ic60'){
-  const iid=it.ref.startsWith('A9R'),n=Math.max(1,Math.round(w/9)),ln=iid?(w===36?2:4):n,pitch=w/ln,am=parseInt(it.desc)||'',lab=iid?'30mA':'C'+am;
-  f='#e4e6e9';t='#f6f7f8';s='#b7bbc0';
-  ex=R(x,y,w,11,'#d3d6da')+R(x,y+h-11,w,11,'#d3d6da')+T.map(q=>scr(q.x,q.y,2.5)).join('')
+  const iid=it.ref.startsWith('A9R'),sw=!!it.sw,n=Math.max(1,Math.round(w/9)),ln=iid?(w===36?2:4):(it.poles||n),pitch=w/ln,am=parseInt(it.desc)||'',cv=(it.name.match(/courbe ([BCD])/)||[0,'C'])[1],lab=iid?'30mA':sw?am+'A':cv+am;
+  f='#eef0f2';t='#f8f9fa';s='#b7bbc0';
+  ex=R(x,y,w,11,'#d9dce0')+R(x,y+h-11,w,11,'#d9dce0')+T.map(q=>scr(q.x,q.y,2.5)).join('')
    +R(x+1.2,y+13,w-2.4,18,'#fff',.8,'#c5c9cd')+R(x+1.8,y+14,3,3,'#3dcd58',.4)
-   +txt(x+w/2,y+26.2,lab,w<14?4.8:6.2,'#111')+txt(x+w/2,y+21.2,iid?'iID':'iC60N',w<14?2.6:3.6,'#555');
-  if(ln>1)ex+=R(x+1.5,y+36,w-3,5,'#17191c',1.2);
-  for(let i=0;i<ln;i++){const cxp=x+pitch*(i+.5);ex+=R(cxp-2.3,y+37,4.6,20,'#101214',1.6)+R(cxp-1.6,y+38,1.2,17,'#4a4f55',.5)+R(cxp-2.9,y+61,5.8,5,'#f4f4f4',.8,'#b5b9bd')+R(cxp-2.9,y+61,2.9,5,'#c0392b',.8)}
+   +txt(x+w/2,y+26.2,lab,w<14?4.8:6.2,'#111')+txt(x+w/2,y+21.2,iid?'iID':sw?'iSW':'iC60N',w<14?2.6:3.6,'#555');
+  const lw=Math.min(w-3,ln*pitch-3);
+  if(ln>1)ex+=R(x+(w-lw)/2,y+35.5,lw,6,sw?'#5b6168':'#17191c',1.2);
+  for(let i=0;i<ln;i++){const cxp=x+pitch*(i+.5);ex+=R(cxp-2.3,y+37,4.6,20,sw?'#6b7178':'#101214',1.6)+R(cxp-1.6,y+38,1.2,17,sw?'#9aa0a6':'#4a4f55',.5)
+   +R(cxp-2.9,y+60,5.8,5.5,'#f4f4f4',.8,'#b5b9bd')+R(cxp-2.2,y+60.8,4.4,3.9,'#2e9e4f',.5)+txt(cxp,y+63.9,'O',2.6,'#fff')}
   if(iid)ex+=`<circle cx="${x+w-9}" cy="${y+73}" r="2.9" fill="#f1c40f" stroke="#8a6d00" stroke-width=".4"/>`+txt(x+w-9,y+74.2,'T',3.4,'#111');
   if(w>=18)ex+=txt(x+w/2,y+h-13,'Acti9',3.4,'#666');
+ }else if(k==='lc1d'&&it.mod){
+  f='#eef0f2';t='#f8f9fa';s='#b7bbc0';const am=parseInt(it.desc)||'';
+  ex=R(x,y,w,11,'#d9dce0')+R(x,y+h-11,w,11,'#d9dce0')+T.map(q=>scr(q.x,q.y,2.4)).join('')
+   +R(x+1.2,y+13,w-2.4,17,'#fff',.8,'#c5c9cd')+R(x+1.8,y+14,3,3,'#3dcd58',.4)
+   +txt(x+w/2,y+21,'iCT',3.6,'#555')+txt(x+w/2,y+27.2,am+'A',w<20?5:6.2,'#111')
+   +R(x+w/2-5.5,y+35,11,22,'#d4d7db',1.5,'#9da3a9')+R(x+w/2-3.6,y+37,7.2,8,'#3b4046',1.2)+txt(x+w/2,y+51,'AUTO',2.4,'#333')+txt(x+w/2,y+55.2,'0 · I',2.4,'#333')
+   +R(x+w/2-3.5,y+60,7,5,'#f4f4f4',.8,'#b5b9bd')+R(x+w/2-2.8,y+60.7,5.6,3.6,'#2e9e4f',.5)
+   +txt(x+w/2,y+71,'A1 · A2',2.6,'#666')+(w>=30?txt(x+w/2,y+h-13,'Acti9',3.4,'#666'):'');
  }else if(k==='lc1d'){
   f='#36393e';t='#555a60';s='#1f2124';
   ex=R(x,y,w,15,'#26292c')+R(x,y+h-15,w,15,'#26292c')+T.map(q=>scr(q.x,q.y,/A[12]/.test(q.label)?2.3:3.2)).join('')
@@ -336,18 +365,27 @@ function drawDev(dv){
  }else if(k==='psu'){
   f='#c3c7cc';t='#dfe2e5';s='#8d9399';
   ex=R(x,y,w,14,'#9ca2a8')+R(x,y+h-14,w,14,'#9ca2a8')+T.map(q=>scr(q.x,q.y,Math.min(3.1,w/T.filter(z=>z.dir===q.dir).length*.3))).join('')
-   +(it.brand==='Siemens'?R(x+4,y+20,w-8,15,'#0aa1a1',1.5)+txf(x+w/2,y+26,'SIEMENS',3.4,'#fff','middle',w-10)+txf(x+w/2,y+32.5,'SITOP',6.4,'#fff','middle',w-10):R(x+4,y+20,w-8,15,'#2aa84a',1.5)+txt(x+w/2,y+30.6,'Phaseo',7.5,'#fff'))
+   +(it.brand==='Siemens'?R(x+4,y+20,w-8,15,'#0aa1a1',1.5)+txf(x+w/2,y+26,'SIEMENS',3.4,'#fff','middle',w-10)+txf(x+w/2,y+32.5,'SITOP',6.4,'#fff','middle',w-10):R(x+4,y+19,w-8,16,'#3a3f45',1.2)+txf(x+w/2,y+27,'Phaseo',6.4,'#f2f4f6','middle',w-12)+txf(x+w/2,y+32.6,'Schneider Electric',2.8,'#3dcd58','middle',w-12))
    +R(x+5,y+40,w-10,32,'#eceef0',1.5,'#b4b9be')+txf(x+w/2,y+55,(it.name.match(/\d+ V DC/)||['24 V DC'])[0],6.4,'#111','middle',w-12)+txt(x+w/2,y+63,(it.name.match(/[\d,]+ A/)||[''])[0],5.6,'#111')+txt(x+w/2,y+69,it.ref,3.2,'#555')
    +led(x+10,y+82,'#2ecc71')+txt(x+16.5,y+83.2,'DC OK',3.2,'#333','','start')
    +`<circle cx="${x+w-13}" cy="${y+86}" r="5" fill="#8b9197" stroke="#555" stroke-width=".5"/><path d="M${x+w-16} ${y+86}h6" stroke="#222" stroke-width="1"/>`;
  }else if(k==='vfd'){
-  f='#c9cdd2';t='#e2e5e8';s='#8d9399';const p6=it.fam!=='ATV320',C=T.filter(q=>/^[cp]\d/.test(q.id)),cy0=C.length?Math.min(...C.map(q=>q.y))-6:y+h*.5,cy1=C.length?Math.max(...C.map(q=>q.y))+6:y+h*.5+10,kh=Math.min(58,Math.max(30,h*.16)),sh=Math.min(30,Math.max(16,h*.08));
-  ex=R(x,y,w,12,'#9ca2a8')+R(x,y+h-12,w,12,'#9ca2a8')+T.filter(q=>/^[tb]\d/.test(q.id)).map(q=>scr(q.x,q.y,Math.min(3,q.r||3))).join('')
-   +R(x+3,y+15,w-6,13,'#2aa84a',1.5)+txf(x+w/2,y+24.2,'Altivar '+(p6?'Process':'Machine'),Math.min(6.5,w*.13),'#fff','middle',w-10)
-   +R(x+4,y+32,w-8,kh,'#2b2f34',2,'#111')+R(x+7,y+35,w-14,sh,'#10202a',1)+txf(x+w/2,y+35+sh/2+2,it.fam,Math.min(7,w*.14),'#5ec7ff','middle',w-18)
-   +txf(x+w/2,y+kh+44,it.ref,Math.min(6,w*.11),'#111','middle',w-8)
-   +R(x+3,cy0,w-6,cy1-cy0,'#a9aeb4',1.5,'#6e747a')+C.map(q=>scr(q.x,q.y,Math.min(2,q.r||2))).join('')
-   +led(x+8,y+h-24,'#2ecc71')+led(x+17,y+h-24,'#ff9f0a');
+  f='#eceef1';t='#f7f8f9';s='#a3a9b0';const fam=it.fam,p6=fam==='ATV630'||fam==='ATV650',C=T.filter(q=>/^[cp]\d/.test(q.id)),cy0=C.length?Math.min(...C.map(q=>q.y))-6:y+h*.5,cy1=C.length?Math.max(...C.map(q=>q.y))+6:y+h*.5+10;
+  ex=R(x,y,w,12,'#cfd3d8')+R(x,y+h-12,w,12,'#cfd3d8')+T.filter(q=>/^[tb]\d/.test(q.id)).map(q=>scr(q.x,q.y,Math.min(3,q.r||3))).join('')
+   +txf(x+5,y+19.5,'Schneider',Math.min(4.2,w*.08),'#3dcd58','start',w*.45)+txf(x+w-5,y+19.5,'Altivar',Math.min(4.2,w*.08),'#5b6168','end',w*.4);
+  if(p6){const gw=Math.min(w-20,70),gh=Math.min(h*.2,92),gx=x+(w-gw)/2,gy=y+24;
+   ex+=R(gx,gy,gw,gh,'#1c1f23',3,'#000')+R(gx+5,gy+5,gw-10,gh*.48,'#0c2233',1.2)+txf(gx+gw/2,gy+5+gh*.2,fam,Math.min(7,gw*.12),'#9fd3ff','middle',gw-16)+txf(gx+gw/2,gy+5+gh*.36,'Prêt · 0,0 Hz',Math.min(4.2,gw*.07),'#d7ecff','middle',gw-16)
+    +`<circle cx="${gx+gw/2}" cy="${gy+gh*.75}" r="${Math.min(8,gh*.13)}" fill="#2b2f34" stroke="#555b62" stroke-width=".8"/>`+R(gx+6,gy+gh*.7,9,6,'#3a3f45',1)+R(gx+gw-15,gy+gh*.7,9,6,'#3a3f45',1)
+    +txf(x+w/2,gy+gh+9,it.ref,Math.min(5.5,w*.1),'#333','middle',w-8);
+  }else{const dw=Math.min(w-10,fam==='ATV12'?52:40),dx0=x+(w-dw)/2,dy0=y+24,dh=fam==='ATV12'?30:26;
+   ex+=R(dx0,dy0,dw,dh,'#26292d',2,'#000')+R(dx0+4,dy0+4,dw-8,10,'#120606',1)+txf(dx0+dw/2,dy0+12.2,'rdY',8,'#ff3b30','middle',dw-14)
+    +`<circle cx="${dx0+dw/2}" cy="${dy0+21}" r="4.6" fill="#3a3f45" stroke="#71777e" stroke-width=".7"/><circle cx="${dx0+dw/2}" cy="${dy0+21}" r="2" fill="#2a2e33"/>`
+    +R(dx0+4,dy0+18,7,5,'#4a4f55',1)+txt(dx0+7.5,dy0+21.6,'ESC',2,'#ddd');
+   if(fam==='ATV12')ex+=R(dx0+dw-12,dy0+16.5,8,4.5,'#1f9d45',1)+txt(dx0+dw-8,dy0+19.8,'RUN',2.2,'#fff')+R(dx0+dw-12,dy0+22,8,4.5,'#c0392b',1)+txt(dx0+dw-8,dy0+25.3,'STOP',2,'#fff');
+   ex+=txf(x+w/2,dy0+dh+8,(fam==='ATV12'?'Altivar 12 · ':'')+it.ref,Math.min(5.2,w*.1),'#333','middle',w-8);
+  }
+  ex+=R(x+3,cy0,w-6,cy1-cy0,'#b9bec4',1.5,'#7d838a')+C.map(q=>scr(q.x,q.y,Math.min(2,q.r||2))).join('')
+   +led(x+8,y+h-24,'#2ecc71')+led(x+14,y+h-24,'#ff9f0a');
  }else if(k==='cpu'){
   const mh=Math.round(h*.6),cx0=w<40?x+w*.6:x+w*.3,eth=it.eth||0;f='#8f99a6';t='#b7bfc9';s='#69727d';
   ex=R(x+w*.3,y+1.3,w*.64,5.4,'#0aa1a1',.5)+txf(x+w*.62,y+5.2,'SIEMENS',3.2,'#fff','middle',w*.5)
@@ -402,7 +440,27 @@ function drawDev(dv){
   if(v==='mtb')ex+=R(x+w*.1,y+h*.43,w*.8,h*.14,'#c0392b',.6,'#7f1d1d')+R(x+w*.28,y+h*.46,w*.44,h*.08,'#f5c542',.4)+`<line x1="${x+w*.1}" y1="${y+h*.5}" x2="${x+w*.9}" y2="${y+h*.5}" stroke="#fff" stroke-width=".35"/>`;
   if(v==='pt')ex+=txt(x+w/2,y+h*.5+1.2,'PT 10',3.2,'#333',1);
   else ex+=txt(x+w/2,y+h*.5+.9,v==='mtb'?'PTTBS 2,5':'PTTBS 1,5',1.7,'#333',1)}
- if(k==='custom'){const col=it.color||'#8a949e',n1=(it.top||{}).n||0,n2=(it.bot||{}).n||0,bh=Math.min(11,h*.14);f=col;t=shade(col,.28);s=shade(col,-.32);
+ if(k==='custom'&&it.sub){const sb=it.sub;
+  if(sb==='lrd'){f='#36393e';t='#555a60';s='#1f2124';
+   ex=R(x,y,w,13,'#26292c')+R(x,y+h-13,w,13,'#26292c')+T.map(q=>scr(q.x,q.y,Math.min(3,q.r||3))).join('')
+    +R(x+3,y+15,w-6,11,'#d0d3d7',1)+R(x+3,y+15,2.4,11,'#3dcd58',.8)+txt(x+w/2+1,y+21.6,it.ref,5,'#111')+txt(x+w/2+1,y+25,'TeSys D',2.6,'#444');
+   const dc=x+w*.32,dy=y+38,a=it.desc.match(/Réglage ([\d,]+)–([\d,]+)/)||[0,'',''];
+   let tk='';for(let i=0;i<=6;i++){const g=(-120+i*40)*Math.PI/180;tk+=`<line x1="${dc+Math.sin(g)*7}" y1="${dy-Math.cos(g)*7}" x2="${dc+Math.sin(g)*8.6}" y2="${dy-Math.cos(g)*8.6}" stroke="#cfd3d7" stroke-width=".5"/>`}
+   ex+=tk+`<circle cx="${dc}" cy="${dy}" r="6" fill="#4a90d9" stroke="#1d4f86" stroke-width=".7"/><path d="M${dc} ${dy}L${dc+2.4} ${dy-4.6}" stroke="#fff" stroke-width="1" stroke-linecap="round"/>`
+    +txt(dc,dy+12.5,a[1]+'–'+a[2]+' A',3,'#ddd')
+    +R(x+w*.6,y+31,w*.28,6,'#c0392b',1.2)+txt(x+w*.74,y+35.3,'STOP',2.4,'#fff')+R(x+w*.6,y+39.5,w*.28,6,'#2b6cb0',1.2)+txt(x+w*.74,y+43.8,'RESET',2.2,'#fff')
+    +txt(x+w*.74,y+50.5,'TEST',2.4,'#bbb')}
+  else if(sb==='prd'){f='#eef0f2';t='#f8f9fa';s='#b7bbc0';const nm=T.filter(q=>q.dir<0).length,pc=w/nm;
+   ex=R(x,y,w,11,'#d9dce0')+R(x,y+h-11,w,11,'#d9dce0')+T.map(q=>scr(q.x,q.y,2.5)).join('')
+    +R(x+1.2,y+13,w-2.4,16,'#fff',.8,'#c5c9cd')+R(x+1.8,y+14,3,3,'#3dcd58',.4)+txt(x+w/2,y+20.4,'iPRD40r',3.6,'#555')+txt(x+w/2,y+26.6,nm>2?'3P+N':'1P+N',5.4,'#111');
+   for(let i=0;i<nm;i++){const cxp=x+pc*(i+.5);ex+=R(cxp-pc*.38,y+33,pc*.76,32,'#e2e5e8',1.2,'#a9aeb4')+R(cxp-2.6,y+37,5.2,4,'#2e9e4f',.6)+txt(cxp,y+52,i===nm-1?'N':'L'+(nm>2?i+1:''),3.6,'#444')+txt(cxp,y+60,'40kA',2.4,'#777')}
+   ex+=txt(x+w/2,y+h-13.5,'⏚ PE',3.4,'#555')}
+  else if(sb==='ipc'){f='#eef0f2';t='#f8f9fa';s='#b7bbc0';const cx=x+w/2,cy=y+50;
+   ex=R(x,y,w,11,'#d9dce0')+R(x,y+h-11,w,11,'#d9dce0')+T.map(q=>scr(q.x,q.y,2.5)).join('')
+    +R(x+1.2,y+13,w-2.4,12,'#fff',.8,'#c5c9cd')+R(x+1.8,y+14,3,3,'#3dcd58',.4)+txt(cx,y+21.4,'iPC 16A',4,'#333')
+    +`<circle cx="${cx}" cy="${cy}" r="17" fill="#e3e6e9" stroke="#a9aeb4" stroke-width=".8"/><circle cx="${cx}" cy="${cy}" r="13.5" fill="#f6f7f8" stroke="#c5c9cd" stroke-width=".6"/>`
+    +`<circle cx="${cx-6.5}" cy="${cy+1}" r="1.9" fill="#2b2f34"/><circle cx="${cx+6.5}" cy="${cy+1}" r="1.9" fill="#2b2f34"/>`+R(cx-1.4,y+38,2.8,5,'#b0b6bc',.6,'#7d838a')+txt(cx,y+h-14,'250 V~',3.2,'#666')}
+ }else if(k==='custom'){const col=it.color||'#8a949e',n1=(it.top||{}).n||0,n2=(it.bot||{}).n||0,bh=Math.min(11,h*.14);f=col;t=shade(col,.28);s=shade(col,-.32);
   ex=R(x,y,w,bh,shade(col,-.18))+R(x,y+h-bh,w,bh,shade(col,-.18))+T.map(q=>scr(q.x,q.y,Math.min(2.6,Math.max(.9,w/Math.max(n1,n2,1)*.3)))).join('');
   if(w>=26)ex+=R(x+3,y+h*.3,w-6,h*.4,'#f1f3f4',1.2,'#b4b9be')+txf(x+w/2,y+h*.5,it.ref,5.4,'#111','middle',w-8)+txf(x+w/2,y+h*.5+7,it.brand||'',3.6,'#555','middle',w-8);
   else ex+=txt(x+w/2+1.2,y+h/2,it.ref,Math.min(4.6,w*.62),'#fff',1)}
@@ -421,6 +479,7 @@ function chPre(it){return (it.name.match(/(DI|DQ|DO|AI|AQ)/)||[0,'C'])[1]}
 function terms(dv){const it=ALL[dv.ref],x=dv.x,y=dv.y,w=it.w,h=it.h,k=it.kind,T=[];
  const row=(n,yy,s,labs)=>{const st=w/n;for(let i=0;i<n;i++)T.push({id:s+i,x:x+st*(i+.5),y:yy,dir:s==='t'?-1:1,label:labs[i]})};
  if(k==='gv2'||k==='gv2p'){row(3,y+8,'t',['1/L1','3/L2','5/L3']);row(3,y+h-8,'b',['2/T1','4/T2','6/T3'])}
+ else if(k==='lc1d'&&it.mod){const n=it.poles,ids=n===4?[0,1,2,4]:[0,1],sl=n+1;T.push({id:'t3',x:x+w*.5/sl,y:y+5,dir:-1,label:'A1',r:2},{id:'b3',x:x+w*.5/sl,y:y+h-5,dir:1,label:'A2',r:2});ids.forEach((d,i)=>{T.push({id:'t'+d,x:x+w*(i+1.5)/sl,y:y+5,dir:-1,label:String(1+2*i),r:2},{id:'b'+d,x:x+w*(i+1.5)/sl,y:y+h-5,dir:1,label:String(2+2*i),r:2})})}
  else if(k==='lc1d'){const xs=[.16,.4,.64,.87],tt=['1/L1','3/L2','5/L3','A1'],bb=['2/T1','4/T2','6/T3','A2'];xs.forEach((f,i)=>{T.push({id:'t'+i,x:x+w*f,y:y+8,dir:-1,label:tt[i]});T.push({id:'b'+i,x:x+w*f,y:y+h-8,dir:1,label:bb[i]})})}
  else if(k==='ic60'){const n=it.ref.startsWith('A9R')?(w===36?2:4):it.poles;row(n,y+5,'t',['1','3','5','7']);row(n,y+h-5,'b',['2','4','6','8'])}
  else if(k==='custom'){const mk=(n,yy,s,labs,dir)=>{const st=w/n;for(let i=0;i<n;i++)T.push({id:s+i,x:x+st*(i+.5),y:yy,dir,label:labs&&labs[i]?labs[i]:String(i+1),r:Math.min(3.6,Math.max(1,st*.36))})};
@@ -648,7 +707,7 @@ function wireList(){if(!S.wires.length)return;
 // ---------- VUE SCHÉMA ÉLECTRIQUE ----------
 let viewMode='3d',schF=0;
 const SP=24,SHT=120,SGAP=56,SROW=230,STOP=150,SLEFT=70;
-const TAGP={tb:'X',gv2:'QM',gv2p:'QM',ic60:'QF',lc1d:'KM',psu:'GS',cpu:'A',io:'A',ba:'A'};
+const TAGP={tb:'X',gv2:'QM',gv2p:'QM',ic60:'QF',lc1d:'KM',psu:'GS',cpu:'A',io:'A',ba:'A',vfd:'TA'};
 function nextTag(it){const p=it.tagp||TAGP[it.kind]||'X';let m=0;S.devs.forEach(d=>{const g=(d.tag||'').match(new RegExp('^'+p+'(\\d+)$'));if(g)m=Math.max(m,+g[1])});return p+(m+1)}
 const spOf=n=>n>6?12:SP;
 function symW(d){const T=terms(d);const a=T.filter(t=>t.dir<0).length,b=T.filter(t=>t.dir>0).length;return Math.max(88,a*spOf(a)+20,b*spOf(b)+20)}
@@ -673,8 +732,8 @@ function symbol(d,P,T){
   if(o.c)p+=`<path ${st} d="M${x-8.15} ${my-3.64}A4 4 0 0 1 ${x-0.85} ${my-0.36}"/>`;
   return p};
  if(k==='gv2'||k==='gv2p'||k==='ic60'||k==='lc1d'){
-  const n=k==='lc1d'?3:T.filter(t=>t.dir<0).length,xs=[];for(let i=0;i<n;i++)xs.push(tp(i).x);
-  xs.forEach(x=>{s+=pole(x,{th:k==='gv2'||k==='gv2p',x:k!=='lc1d',c:k==='lc1d'})});
+  const pid=i=>it.mod&&i===3?4:i,n=k==='lc1d'?(it.mod?it.poles:3):T.filter(t=>t.dir<0).length,xs=[];for(let i=0;i<n;i++)xs.push(tp(pid(i)).x);
+  xs.forEach(x=>{s+=pole(x,{th:k==='gv2'||k==='gv2p',x:k!=='lc1d'&&!it.sw,c:k==='lc1d'})});
   const x1=xs[0]-4.5;let x2=xs[n-1]-4.5;
   if(k==='lc1d'){const x4=tp(3).x;s+=`<path ${st} d="M${x4} ${P.y}V${my-18}M${x4} ${my+18}V${bot}"/><rect x="${x4-9}" y="${my-18}" width="18" height="36" ${st}/>`+stxt(x4,my+2.5,d.tag||'KM',6.5,'#111');x2=x4-9}
   s+=`<path stroke="#111" stroke-width="1" stroke-dasharray="3 2" fill="none" d="M${x1} ${my-2}H${x2}"/>`;
@@ -690,7 +749,7 @@ function symbol(d,P,T){
   s+=stxt(P.x+P.w/2,P.y+P.h+0,'',1,'#000');
  }else if(k==='vfd'){
   const bx=P.x+8,bw=P.w-16,by=P.y+30,bh=P.h-60;
-  s+=`<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" ${st}/><path ${st} d="M${bx+bw} ${by}L${bx} ${by+bh}"/>`+stxt(bx+14,by+16,'3~',10,'#111')+stxt(bx+bw-14,by+bh-6,'3~',10,'#111')+stxt(P.x+P.w/2,my+4,it.fam,10,'#111','middle','600');
+  s+=`<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" ${st}/><path ${st} d="M${bx+bw} ${by}L${bx} ${by+bh}"/>`+stxt(bx+14,by+16,it.in1?'1~':'3~',10,'#111')+stxt(bx+bw-14,by+bh-6,'3~',10,'#111')+stxt(P.x+P.w/2,my+4,it.fam,10,'#111','middle','600');
   T.forEach(t=>{const pw=t.id[0]==='t'||t.id[0]==='b';s+=pw?`<path ${st} d="M${t.x} ${t.y}V${t.dir<0?by:by+bh}"/>`:`<path ${st} d="M${t.x} ${t.y}V${t.y-12}"/>`})
  }else if(k==='psu'){
   const bx=P.x+8,bw=P.w-16,by=P.y+30,bh=P.h-60;
@@ -872,12 +931,6 @@ function renderBom0(){const r=bomRows();$('bom').innerHTML=r.length?`<table><tr>
 function thumb(it){const dx=DS(it).dx,dy=DS(it).dy,dv={id:0,ref:it.ref,x:3,y:3-dy,ph:'',tag:''};
  return `<svg class="thumb" viewBox="0 0 ${it.w+dx+6} ${it.h-dy+6}" preserveAspectRatio="xMidYMid meet">${drawDev(dv)}</svg>`}
 
-function renderPal(){const q=$('q').value.toLowerCase();let h='';
- CAT.forEach(g=>{const its=g.items.filter(i=>!q||(i.ref+i.name+i.desc+g.g).toLowerCase().includes(q));if(!its.length)return;
-  h+=`<div class="grp">${g.g} (${its.length})</div>`+its.map(i=>`<div class="card" draggable="true" data-ref="${i.ref}">${thumb(i)}<div><b>${i.ref}</b><small>${i.name}</small><small>${i.desc}</small></div></div>`).join('')});
- $('plist').innerHTML=h;
- $('plist').querySelectorAll('.card').forEach(c=>{c.addEventListener('dragstart',e=>e.dataTransfer.setData('text/plain',c.dataset.ref));c.addEventListener('dblclick',()=>place(c.dataset.ref,{x:S.enc.w/2,y:S.enc.h/2}))});
- $('plist').querySelectorAll('.grp').forEach(g=>g.onclick=()=>{let n=g.nextElementSibling;while(n&&n.classList.contains('card')){n.style.display=n.style.display==='none'?'':'none';n=n.nextElementSibling}})}
 $('q').addEventListener('input',renderPal);
 
 // ---------- BARRE D'OUTILS ----------
@@ -1059,16 +1112,17 @@ function openEditor(ref){
  prev()}
 
 // ---------- palette (avec dossiers de la bibliothèque) ----------
+const PALOPEN=new Set();
 function renderPal(){const q=$('q').value.toLowerCase();let h='';
- CAT.forEach(g=>{const its=g.items.filter(i=>!q||(i.ref+i.name+i.desc+g.g).toLowerCase().includes(q));
+ CAT.forEach(g=>{const op=!!q||PALOPEN.has(g.g),its=g.items.filter(i=>!q||(i.ref+i.name+i.desc+g.g).toLowerCase().includes(q));
   if(!its.length&&(q||!g.custom||(g.folder===''&&LIB.folders.length)))return;
-  h+=g.custom?`<div class="grp cg" data-f="${esc(g.folder)}">${esc(g.g)} (${its.length})${g.folder?'<span class="gi"><i data-a="ren" title="Renommer">✎</i><i data-a="del" title="Supprimer">🗑</i></span>':''}</div>`:`<div class="grp">${esc(g.g)} (${its.length})</div>`;
-  h+=its.map(i=>`<div class="card" draggable="true" data-ref="${esc(i.ref)}">${thumb(i)}<div><b>${esc(i.ref)}</b><small>${esc(i.name)}</small><small>${esc(i.desc)}</small></div>${i.custom?'<b class="ce" title="Modifier ce composant">✎</b>':''}</div>`).join('')});
+  h+=g.custom?`<div class="grp cg${op?' open':''}" data-g="${esc(g.g)}" data-f="${esc(g.folder)}">${esc(g.g)} (${its.length})${g.folder?'<span class="gi"><i data-a="ren" title="Renommer">✎</i><i data-a="del" title="Supprimer">🗑</i></span>':''}</div>`:`<div class="grp${op?' open':''}" data-g="${esc(g.g)}">${esc(g.g)} (${its.length})</div>`;
+  h+=its.map(i=>`<div class="card"${op?'':' style="display:none"'} draggable="true" data-ref="${esc(i.ref)}">${thumb(i)}<div><b>${esc(i.ref)}</b><small>${esc(i.name)}</small><small>${esc(i.desc)}</small></div>${i.custom?'<b class="ce" title="Modifier ce composant">✎</b>':''}</div>`).join('')});
  if(!LIB.items.length&&!LIB.folders.length&&!q)h+='<div class="hint">📁 Votre bibliothèque est vide. Onglet « Bibliothèque » → Nouveau composant ou Nouveau dossier.</div>';
  $('plist').innerHTML=h;
  $('plist').querySelectorAll('.card').forEach(c=>{c.addEventListener('dragstart',e=>e.dataTransfer.setData('text/plain',c.dataset.ref));c.addEventListener('dblclick',()=>place(c.dataset.ref,{x:S.enc.w/2,y:S.enc.h/2}))});
  $('plist').querySelectorAll('.ce').forEach(b=>{b.onclick=e=>{e.stopPropagation();openEditor(b.closest('.card').dataset.ref)};b.ondblclick=e=>e.stopPropagation()});
- $('plist').querySelectorAll('.grp').forEach(g=>g.onclick=()=>{let n=g.nextElementSibling;while(n&&n.classList.contains('card')){n.style.display=n.style.display==='none'?'':'none';n=n.nextElementSibling}});
+ $('plist').querySelectorAll('.grp').forEach(g=>g.onclick=()=>{const op=!g.classList.contains('open');g.classList.toggle('open',op);if(op)PALOPEN.add(g.dataset.g);else PALOPEN.delete(g.dataset.g);let n=g.nextElementSibling;while(n&&n.classList.contains('card')){n.style.display=op?'':'none';n=n.nextElementSibling}});
  $('plist').querySelectorAll('.grp.cg').forEach(g=>{
   g.addEventListener('dragover',e=>{e.preventDefault();g.classList.add('over')});g.addEventListener('dragleave',()=>g.classList.remove('over'));
   g.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();g.classList.remove('over');moveItem(e.dataTransfer.getData('text/plain'),g.dataset.f)});
@@ -1076,11 +1130,11 @@ function renderPal(){const q=$('q').value.toLowerCase();let h='';
 
 // ---------- contrôles, bilan, repères, étiquettes, plan de bornier ----------
 const amps=s=>{const m=String(s).match(/([\d,]+)\s*A\b/);return m?parseFloat(m[1].replace(',','.')):0};
-function domOf(d,t){const it=ALL[d.ref],k=it.kind;if(t.net)return 'NET';if(k==='vfd'){if(t.id[0]==='c')return /^(\+24|0V|\+10|COM)$/.test(t.label)?'DC':null;if(t.id[0]==='t')return 'AC';return /^(U|V|W)\//.test(t.label)||t.label==='PE'?'AC':null}if(k==='psu')return t.dir<0?'AC':'DC';if(k==='cpu'||k==='io'||k==='ba')return 'DC';if(k==='lc1d'&&/BD$/.test(it.ref)&&(t.id==='t3'||t.id==='b3'))return 'DC';if(k==='gv2'||k==='gv2p'||k==='ic60'||k==='lc1d')return 'AC';return null}
+function domOf(d,t){const it=ALL[d.ref],k=it.kind;if(t.net)return 'NET';if(k==='vfd'){if(t.id[0]==='c')return /^(\+24V?|0V|\+10|\+5V|COM)$/.test(t.label)?'DC':null;if(t.id[0]==='t')return 'AC';return /^(U|V|W)\//.test(t.label)||t.label==='PE'?'AC':null}if(k==='psu')return t.dir<0?'AC':'DC';if(k==='cpu'||k==='io'||k==='ba')return 'DC';if(k==='lc1d'&&/BD$/.test(it.ref)&&(t.id==='t3'||t.id==='b3'))return 'DC';if(k==='gv2'||k==='gv2p'||k==='ic60'||k==='lc1d')return 'AC';return null}
 const wdom=ty=>/^(L1|L2|L3|N )|^N\b/.test(ty)?'AC':/^(24V|0V|Signal)/.test(ty)?'DC':/^Réseau/.test(ty)?'NET':null;
 const SECT=[[10,'1,5 mm²'],[16,'2,5 mm²'],[25,'4 mm²'],[32,'6 mm²'],[40,'10 mm²'],[63,'16 mm²'],[80,'25 mm²'],[1e9,'35 mm² ou plus']];
 const sectOf=a=>SECT.find(s=>a<=s[0])[1];
-const inOf=it=>{if(it.kind==='gv2'||it.kind==='gv2p'){const m=it.desc.match(/–\s*([\d,]+)\s*A/)||it.desc.match(/^([\d,]+)\s*A/);return m?parseFloat(m[1].replace(',','.')):0}if(it.kind==='ic60')return amps(it.desc);return 0};
+const inOf=it=>{if(it.kind==='gv2'||it.kind==='gv2p'){const m=it.desc.match(/–\s*([\d,]+)\s*A/)||it.desc.match(/^([\d,]+)\s*A/);return m?parseFloat(m[1].replace(',','.')):0}if(it.kind==='ic60')return it.sw?0:amps(it.desc);return 0};
 const kwOf=it=>{const m=it.desc.match(/([\d,]+)\s*kW/);return m?parseFloat(m[1].replace(',','.')):0};
 const i24Of=it=>it.i24!=null?+it.i24:({cpu:.7,io:.05,ba:.1}[it.kind]||0);
 function runChecks(){const R=[],add=(s,t)=>R.push([s,t]);const C=connMap();
